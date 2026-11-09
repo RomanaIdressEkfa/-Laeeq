@@ -19,7 +19,6 @@ body{
   background:
     radial-gradient(circle at 50% -10%, #fff3c4 0, transparent 55%),
     linear-gradient(180deg,#ffe8b8 0%,#ffd28a 45%,#ffe9c7 100%);
-  background-attachment:fixed;
   overflow-x:hidden;
   min-height:100vh;
 }
@@ -94,7 +93,7 @@ button{font-family:inherit;cursor:pointer}
   position:sticky;top:0;z-index:30;
   display:flex;align-items:center;justify-content:space-between;gap:1rem;
   padding:.5rem 16px;
-  background:rgba(255,240,205,.85);backdrop-filter:blur(8px);
+  background:#fff0cd;
   border-bottom:3px solid var(--red);
 }
 .logo{display:flex;align-items:center;gap:.6rem;text-decoration:none}
@@ -117,7 +116,7 @@ button{font-family:inherit;cursor:pointer}
   display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:2rem;align-items:center;
   max-width:1200px;margin:0 auto;padding:2rem 16px 3rem;min-height:calc(100vh - 80px);
 }
-.rays{
+.rays{will-change:transform;contain:strict;
   position:absolute;left:25%;top:50%;width:1400px;height:1400px;margin:-700px 0 0 -700px;
   background:repeating-conic-gradient(rgba(255,213,74,.35) 0 8deg,transparent 8deg 16deg);
   border-radius:50%;
@@ -333,7 +332,7 @@ button{font-family:inherit;cursor:pointer}
 .rashi-card{
   min-height:330px;border-radius:22px;padding:1.4rem 1.4rem 1.2rem;color:#f3ecff;
   background:linear-gradient(160deg,rgba(255,255,255,.12),rgba(255,255,255,.04));
-  border:2px solid rgba(233,185,73,.6);backdrop-filter:blur(4px);box-shadow:0 10px 40px rgba(0,0,0,.35);
+  border:2px solid rgba(233,185,73,.6);box-shadow:0 10px 40px rgba(0,0,0,.35);
 }
 .rc-empty{text-align:center;padding-top:2.5rem;color:#cbb8ff;font-size:1.1rem;line-height:1.7}
 .rc-big{font-size:4rem;animation:bob 2s ease-in-out infinite}
@@ -620,6 +619,7 @@ button{font-family:inherit;cursor:pointer}
   max-width:min(92vw,460px);text-align:center;box-shadow:var(--shadow);
   transition:transform .35s cubic-bezier(.3,1.5,.6,1);
 }
+.toast:not(.show){visibility:hidden;opacity:0;transition:transform .35s,opacity .2s,visibility 0s .35s}
 .toast.show{transform:translate(-50%,0)}
 
 /* shake screen for drama */
@@ -779,3 +779,80 @@ button{font-family:inherit;cursor:pointer}
   .incense{display:none}
   .danbox{width:78px;height:64px;right:-6%}
 }
+
+/* ---------- ডেভেলপার ক্রেডিট ---------- */
+.dev-credit{margin-top:1rem !important;padding-top:1rem;border-top:1px dashed rgba(255,233,176,.3);font-size:.95rem}
+.dev-credit a{color:var(--gold);font-weight:700;text-decoration:none;border-bottom:2px solid rgba(255,213,74,.4)}
+.dev-credit a:hover{color:#fff;border-bottom-color:#fff}
+
+/* ---------- রেসপন্সিভ ঠিকঠাক ---------- */
+.slide-count{display:none;text-align:center;margin:.5rem 0 0;font-weight:700;color:var(--maroon)}
+@media (max-width:860px){
+  .topbar{flex-wrap:wrap;row-gap:.35rem;padding-bottom:.4rem}
+  .nav{order:3;width:100%;overflow-x:auto;gap:.4rem;padding-bottom:.15rem;scrollbar-width:none}
+  .nav::-webkit-scrollbar{display:none}
+  .nav a{display:inline-block !important;white-space:nowrap;font-size:.88rem;padding:.2rem .8rem;border-radius:999px;background:#fff7e0;border:1.5px solid #e8b56b}
+  #soundToggle{position:absolute;right:16px;top:.6rem}
+  .topbar{position:sticky}
+  .darbar{gap:1.2rem;padding-top:.8rem}
+  .sec-title{font-size:2rem}
+}
+@media (max-width:600px){
+  .slide-dots{display:none}
+  .slide-count{display:block}
+  .consult-actions{gap:.5rem}
+  .consult-actions .btn{flex:1;padding:.6rem .5rem;font-size:.92rem;white-space:nowrap}
+  .runaway{max-width:60%;overflow:hidden;text-overflow:ellipsis}
+  .ct-actions button{width:32px;height:32px;font-size:.85rem}
+  .ct-actions button[data-joke="more"]{display:none}
+  .ct-info b{font-size:1rem}
+  .sleep-stats dd{font-size:1.02rem}
+  .sleep-scene{min-height:440px}
+  .sl-baba{margin-top:7rem}
+  .bubble{font-size:1.05rem;padding:.6rem .9rem}
+  .nameplate b{font-size:1.15rem}
+  .nameplate span{font-size:.7rem}
+  .section{padding:2.2rem 16px}
+  .rashi-panel{padding:1.6rem 12px 1.8rem}
+  .rc-meters{grid-template-columns:minmax(0,1fr)}
+}
+
+/* ---------- পর্দায় বাবার তাগাদা ---------- */
+.curtain-bubble{
+  position:relative;max-width:min(420px,92%);margin:0 auto 1rem;padding:.7rem 1.1rem;
+  background:#fff;color:var(--ink);border:3px solid #2b1508;border-radius:20px;
+  font-weight:700;font-size:1.05rem;line-height:1.5;box-shadow:0 6px 0 rgba(0,0,0,.25);
+  opacity:0;transform:scale(.4);transition:opacity .2s;min-height:0;
+}
+.curtain-bubble:empty{visibility:hidden}
+.curtain-bubble.show{opacity:1;transform:scale(1);animation:pop .4s cubic-bezier(.3,1.6,.6,1)}
+.curtain-bubble::after{content:"";position:absolute;left:50%;bottom:-14px;margin-left:-12px;border:12px solid transparent;border-top-color:#2b1508;border-bottom:0}
+.curtain-logo.talk{animation:talk .5s ease 3}
+@keyframes talk{0%,100%{transform:rotate(0) scale(1)}30%{transform:rotate(-6deg) scale(1.06)}70%{transform:rotate(6deg) scale(1.06)}}
+.enter-zone{position:relative;display:flex;justify-content:center;min-height:60px}
+#enterBtn.nudge{animation:wiggle .4s ease 4,pulse 1.4s 1.6s infinite}
+#enterBtn.hop{animation:hop 2.4s ease-in-out infinite}
+#enterBtn.angry{animation:shakeX .12s linear infinite;background:linear-gradient(180deg,#ff6b6b,#e03131);color:#fff;transform:scale(1.12);box-shadow:0 4px 0 #7d0b06,0 0 30px #ff6b6b}
+@keyframes hop{
+  0%,100%{transform:translate(0,0) rotate(0)}
+  15%{transform:translate(-70px,-22px) rotate(-8deg)}
+  30%{transform:translate(-70px,0) rotate(0)}
+  50%{transform:translate(70px,-22px) rotate(8deg)}
+  65%{transform:translate(70px,0) rotate(0)}
+  85%{transform:translate(0,-30px) scale(1.08)}
+}
+@media (max-width:600px){
+  .curtain-bubble{font-size:.95rem}
+  @keyframes hop{
+    0%,100%{transform:translate(0,0)}
+    25%{transform:translate(-40px,-18px) rotate(-8deg)}
+    50%{transform:translate(40px,0) rotate(8deg)}
+    75%{transform:translate(0,-24px) scale(1.06)}
+  }
+}
+
+/* ---------- পারফরম্যান্স: স্ক্রলে আটকে না যায় ---------- */
+/* যে সেকশন স্ক্রিনে নেই, তার সব অ্যানিমেশন থামিয়ে রাখো */
+.offscreen,.offscreen *{animation-play-state:paused !important}
+.baba,.sl-top,.ticker-track,.z-wheel,.logo-ring{will-change:transform}
+.txt .case{display:block;margin-bottom:.35rem;font-size:.75rem;font-weight:700;color:#8e1b10;letter-spacing:.2px}

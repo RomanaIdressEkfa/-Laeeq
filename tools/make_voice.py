@@ -1,6 +1,6 @@
-"""app.js এর সব বাংলা লাইন থেকে বাবার পুরুষ কণ্ঠের ভয়েস (MP3) বানায়।
+"""app.js আর brain.js এর সব বাংলা লাইন থেকে বাবার পুরুষ কণ্ঠের ভয়েস (MP3) বানায়।
 চালাও:  python tools/make_voice.py   (লাগবে: pip install edge-tts)
-নতুন ভয়েস/গলা চাইলে নিচের VOICE / RATE / PITCH বদলে assets/audio এর mp3 গুলো মুছে আবার চালাও।
+নতুন ভয়েস/গলা চাইলে নিচের VOICE / RATE / PITCH বদলে আবার চালাও (পুরনো mp3 নিজেই মুছে যাবে)।
 """
 import asyncio, hashlib, json, os, re, sys
 sys.stdout.reconfigure(encoding="utf-8")
@@ -21,7 +21,7 @@ def spoken(t):
     return t
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SRC = os.path.join(ROOT, "assets", "js", "app.js")
+SRCS = [os.path.join(ROOT, "assets", "js", f) for f in ("app.js", "brain.js")]
 OUT = os.path.join(ROOT, "assets", "audio")
 os.makedirs(OUT, exist_ok=True)
 
@@ -30,9 +30,10 @@ EMOJI = re.compile("[\U0001F000-\U0001FFFF⌀-⏿☀-➿⬀-⯿️‍]")
 def clean(s):  # app.js এর voiceKey() এর সাথে হুবহু মিল থাকতে হবে
     return re.sub(r"\s+", " ", EMOJI.sub("", s)).strip()
 
-js = open(SRC, encoding="utf-8").read()
-texts = sorted({clean(m) for m in re.findall(r'"((?:[^"\\n]|\.)*)"', js)
-                if re.search("[ঀ-৿]", m) and len(clean(m)) > 3})
+js = "\n".join(open(f, encoding="utf-8").read() for f in SRCS)
+STRING = re.compile(r'"((?:[^"\\\n]|\\.)*)"')
+texts = sorted({clean(m) for m in STRING.findall(js)
+                if re.search("[ঀ-৿]", m) and len(clean(m)) >= 16})  # ছোট কীওয়ার্ড/লেবেল বাদ — বাবা শুধু পুরো বাক্য বলেন
 
 sem = asyncio.Semaphore(3)
 
@@ -47,9 +48,10 @@ async def make(t):
                     await edge_tts.Communicate(say, VOICE, rate=RATE, pitch=PITCH).save(path)
                     break
                 except Exception as e:
-                    if os.path.exists(path): os.remove(path)
+                    if os.path.exists(path):
+                        os.remove(path)
                     if attempt == 4:
-                        print("FAILED:", t, "-", e)
+                        print("FAILED:", t, "-", type(e).__name__)
                         return t, None
                     await asyncio.sleep(2 + attempt * 2)
     return t, name

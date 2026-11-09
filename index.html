@@ -20,11 +20,11 @@
   <div class="curtain-left"></div>
   <div class="curtain-right"></div>
   <div class="curtain-center">
-    <img src="assets/img/baba-head.jpg" alt="" class="curtain-logo">
+    <div class="curtain-bubble" id="curtainBubble" aria-live="polite"></div>
+    <img src="assets/img/baba-head.jpg" alt="" class="curtain-logo" id="curtainLogo">
     <h1 class="brand-title big">ভন্ড বাবা <span>Laeeq</span></h1>
     <p class="curtain-tag">সকল সমস্যার ১০০% ভুল সমাধান</p>
-    <button id="enterBtn" class="btn btn-gold pulse">🙏 দরবারে প্রবেশ করো</button>
-    <button id="enterSilent" class="link-btn">চুপচাপ ঢুকবো (সাউন্ড ছাড়া)</button>
+    <div class="enter-zone"><button id="enterBtn" class="btn btn-gold pulse">🙏 দরবারে প্রবেশ করো</button></div>
   </div>
 </div>
 
@@ -645,6 +645,7 @@
     <button class="slide-nav next" id="testiNext" aria-label="পরের">▶</button>
   </div>
   <div class="slide-dots" id="testiDots"></div>
+  <p class="slide-count" id="testiCount"></p>
 </section>
 </main>
 
@@ -652,11 +653,13 @@
   <p><b class="brand-title small">ভন্ড বাবা <span>Laeeq</span></b></p>
   <p>⚠️ সতর্কীকরণ: এই সাইট শুধুমাত্র মজার জন্য। বাবার কোনো অলৌকিক ক্ষমতা নাই — শুধু দাড়ি আছে, তাও এডিট করা।</p>
   <p class="muted">© ২০২৬ ভন্ড বাবা ট্রাস্ট (রেজিস্ট্রেশন প্রক্রিয়াধীন… গত ১২ বছর ধরে)</p>
+  <p class="dev-credit">💻 Developed by <a href="https://ekfa.vercel.app" target="_blank" rel="noopener">Romana Idress Ekfa</a></p>
 </footer>
 
 <div id="toast" class="toast"></div>
 
 <script src="assets/audio/voice.js"></script>
+<script src="assets/js/brain.js"></script>
 <script src="assets/js/app.js"></script>
 </body>
 </html>

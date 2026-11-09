@@ -199,22 +199,6 @@
     },
   ];
 
-  const GENERIC = [
-    "হুম… এমন কঠিন সমস্যা বাবা গত ৩০০ বছরে দেখেননি। আপাতত এক কাপ চা খাও, সমস্যা ৪০% কমে যাবে। ☕",
-    "বৎস, তোমার সমস্যার সমাধান আছে… কিন্তু সেটা বলতে গেলে ৫০১ টাকার প্রিমিয়াম প্যাকেজ লাগবে। ফ্রি ভার্সনে বলি — “সব ঠিক হয়ে যাবে” 🙂",
-    "ধ্যানে বসলাম, দেখলাম… কিছুই দেখলাম না, ঘুমিয়ে পড়েছিলাম। তবে স্বপ্নে বিরিয়ানি দেখেছি — মানে তোমার ভাগ্য ভালো। 🍛",
-    "এই সমস্যার মূল কারণ তোমার রাশি, তোমার গ্রহ, তোমার প্রতিবেশীর ওয়াই-ফাই, আর মঙ্গলবার। চারটাই বদলাও।",
-    "বৎস, সমস্যা হলো নদীর মতো — আসে, যায়। তুমি শুধু সাঁতার শিখে রাখো। আর না শিখলে লাইফ জ্যাকেট কিনো। 🛟",
-    "এটা নিয়ে চিন্তা করে লাভ নাই। চিন্তা করার দায়িত্ব বাবার, আর বাবা চিন্তা করেন না। ব্যস, সমাধান! 😌",
-  ];
-
-  const GENERIC_TOTKA = [
-    "বাম পায়ে মোজা আগে পরবে, ডান পায়ে পরে। ৭ দিন। ফল না হলে উল্টো করবে।",
-    "লেবু আর মরিচ দরজায় ঝুলাও। কাজ না হলে লেবু দিয়ে শরবত বানিয়ে খেয়ে ফেলো।",
-    "পূর্ণিমার রাতে চাঁদের দিকে তাকিয়ে বলো “Laeeq বাবা কি জয়”। আশেপাশের লোক তাকাবে, সেটাও একটা অর্জন।",
-    "তিনবার হাততালি দাও, একবার লাফ দাও, তারপর ভুলে যাও যে সমস্যা ছিলো।",
-  ];
-
   const FEES = [
     "দক্ষিণা: ২টা সিঙ্গারা + ১ কাপ দুধ চা ☕",
     "দক্ষিণা: কাচ্চির এক প্লেট (আলু বড় সাইজ) 🍛",
@@ -333,7 +317,7 @@
       // রেকর্ড করা বাংলা ভয়েস + মন্দিরের মতো প্রতিধ্বনি (echo), গুরুর মতো
       player = new Audio("assets/audio/" + file);
       const a = audio();
-      if (a) {
+      if (a && a.state === "running") {
         try {
           const src = a.createMediaElementSource(player);
           const delay = a.createDelay(1), fb = a.createGain(), wet = a.createGain();
@@ -473,6 +457,14 @@
     "কালো চশমা মানে বাবার ভাব এক হাজার পার্সেন্ট।",
     "চশমা খুলো না বৎস, বাবার চোখে তাকালে তোমার পরীক্ষার রেজাল্ট দেখা যাবে।",
   ];
+  // চশমা খুললে বাবা ধমক দিয়ে জরিমানা করেন — বারবার খুললে জরিমানা বাড়ে
+  const SHADES_SCOLD = [
+    "এই বৎস! তুই আমার চশমা খুললি? এখনই আমার পঞ্চাশ টাকা দক্ষিণা দিবি!",
+    "আবার খুললি? এবার জরিমানা একশো টাকা! বাকির খাতায় লিখে রাখলাম!",
+    "তুই তো দেখি চশমা-চোর! জরিমানা দেড়শো টাকা, সাথে দুইটা সিঙ্গারা!",
+    "থাম! আর একবার খুললে তোর নাম আশ্রমের দেয়ালে লিখে দিবো, চশমা-চোর বলে!",
+  ];
+  let shadesFine = 0, shadesTimes = 0;
   shades.addEventListener("click", async (e) => {
     e.stopPropagation();
     if (!introDone || shadesBusy || busy) return;
@@ -481,17 +473,69 @@
     void shades.offsetWidth;
     shades.classList.add("fly");
     whoosh(0.6);
-    say("আরে আরে! বাবার চশমা কই গেলো? 😱");
-    await wait(1400);
+    const scold = SHADES_SCOLD[Math.min(shadesTimes, SHADES_SCOLD.length - 1)];
+    shadesTimes++;
+    shadesFine += 50;
+    baba.classList.remove("levitate", "poked"); void baba.offsetWidth; baba.classList.add("poked");
+    $("#darbar").classList.add("shake");
+    setTimeout(() => $("#darbar").classList.remove("shake"), 500);
+    boing();
+    toast(`😡 চশমা খোলার জরিমানা! মোট বাকি দক্ষিণা: ${bn(shadesFine)} টাকা 💸`);
+    await say(scold + " 😠");
+    await wait(600);
+    baba.classList.remove("poked"); baba.classList.add("levitate");
     shades.classList.remove("fly");
     await dropShades();
     say(pick(SHADES_LINES) + " 😎");
     shadesBusy = false;
   });
 
+  /* পর্দায় বাবা ক্লিক করতে বলবেন; না করলে নিজেই ঢুকে পড়বেন */
+  const CURTAIN_LINES = [
+    "দরবারে প্রবেশ করতে নিচের বাটনে ক্লিক করো বৎস",
+    "কী হলো? বাটনটা নড়ছে দেখছো না? ক্লিক করো!",
+    "আরে ক্লিক করো না! বাবার চা ঠান্ডা হয়ে যাচ্ছে!",
+    "উফ… আচ্ছা যাও, তোমার ক্লিক করতে হবে না। আমি নিজেই দরবারে প্রবেশ করছি!",
+  ];
+  const curtainBubble = $("#curtainBubble"), enterBtn = $("#enterBtn"), curtainLogo = $("#curtainLogo");
+  const curtainTimers = [];
+  let introStarted = false;
+  function curtainSay(i, btnClass) {
+    if (introStarted) return; // ঢুকে পড়ার পর আর তাগাদা নয়
+    curtainBubble.textContent = CURTAIN_LINES[i] + [" 👇", " 🤨", " 😤", " 🙄"][i];
+    curtainBubble.classList.remove("show"); void curtainBubble.offsetWidth; curtainBubble.classList.add("show");
+    curtainLogo.classList.remove("talk"); void curtainLogo.offsetWidth; curtainLogo.classList.add("talk");
+    enterBtn.classList.remove("nudge", "hop", "angry");
+    void enterBtn.offsetWidth;
+    if (btnClass) enterBtn.classList.add(btnClass);
+    speak(CURTAIN_LINES[i]); // ব্রাউজার অনুমতি দিলে শোনা যাবে, নইলে শুধু লেখা
+  }
+  function startIntro() {
+    if (introStarted) return;
+    introStarted = true;
+    curtainTimers.forEach(clearTimeout);
+    stopVoice(); // পর্দার "ক্লিক করো" লাইন বাজতে থাকলে থামাও
+    enterBtn.classList.remove("nudge", "hop", "angry", "pulse");
+    enterBtn.disabled = true;
+    curtainBubble.classList.remove("show");
+    curtainBubble.textContent = "";
+    curtainLogo.classList.remove("talk");
+    runIntro(true);
+  }
+  curtainTimers.push(
+    setTimeout(() => curtainSay(0, "nudge"), 900),
+    setTimeout(() => curtainSay(1, "hop"), 5000),
+    setTimeout(() => curtainSay(2, "angry"), 9500),
+    setTimeout(() => curtainSay(3, null), 14000),
+    setTimeout(() => { if (!introStarted) enterBtn.textContent = "🚪 বাবা নিজেই ঢুকছেন…"; }, 15500),
+    setTimeout(startIntro, 17500),
+  );
+
   document.body.classList.add("locked");
-  $("#enterBtn").addEventListener("click", () => runIntro(true), { once: true });
-  $("#enterSilent").addEventListener("click", () => runIntro(false), { once: true });
+  enterBtn.addEventListener("click", startIntro);
+  // ব্রাউজার যেকোনো কারণে অডিও থামিয়ে দিলে, পরের ক্লিক/টাচেই আবার চালু
+  ["click", "touchstart", "keydown"].forEach((ev) =>
+    document.addEventListener(ev, () => { if (soundOn) audio(); }, { passive: true }));
 
   /* ---------------- চ্যাট ---------------- */
   const chat = $("#chat");
@@ -641,12 +685,18 @@
     if (!q || busy) { input.focus(); return; }
     input.value = "";
     addUser(q);
-    say("এটা তো নতুন সমস্যা! দাঁড়াও… 🤔");
-    await think(2200);
-    const ans = pick(GENERIC);
-    smoke(5); boing();
-    addBaba(`${esc(ans)}<span class="totka">🪄 <b>বাবার টোটকা:</b> ${esc(pick(GENERIC_TOTKA))}</span><span class="fee">${pick(FEES)}</span>`);
-    say(ans);
+    const r = window.BABA_BRAIN.respond(q);
+    say(r.serious ? "দাঁড়াও বৎস… মন দিয়ে পড়ছি।" : pick(window.BABA_BRAIN.REACTIONS));
+    await think(r.serious ? 1200 : 2200);
+    const caseLine = `<span class="case">📜 মামলা নং #${bn(r.caseNo)} · ${r.label}</span>`;
+    if (r.serious) {
+      addBaba(`${caseLine}${esc(r.answer)}<span class="totka">🤍 ${esc(r.totka)}</span>`);
+    } else {
+      smoke(5); boing();
+      addBaba(`${caseLine}${esc(r.answer)}<span class="totka">🪄 <b>বাবার টোটকা:</b> ${esc(r.totka)}</span><span class="fee">${pick(FEES)}</span>`);
+      maybeSticker();
+    }
+    say(r.answer);
     bumpCount();
     renderMain();
   });
@@ -1103,6 +1153,7 @@
     const pv = perView();
     cards.forEach((c, k) => c.classList.toggle("in", k >= slide && k < slide + pv));
     $$("button", dotsEl).forEach((d, k) => d.classList.toggle("on", k === slide));
+    $("#testiCount").textContent = `${bn(slide + 1)} / ${bn(maxSlide() + 1)}`;
   }
   function restart() {
     clearInterval(slideTimer);
@@ -1124,6 +1175,12 @@
   let rz;
   addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => { buildDots(); go(Math.min(slide, maxSlide())); }, 150); });
   buildDots(); go(0); restart();
+
+  /* ---------------- স্ক্রিনের বাইরের সেকশনের অ্যানিমেশন থামাও (স্ক্রল মসৃণ রাখতে) ---------------- */
+  if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver((es) => es.forEach((e) => e.target.classList.toggle("offscreen", !e.isIntersecting)), { rootMargin: "150px 0px" });
+    $$("#darbar, main > .section, .footer").forEach((sec) => io.observe(sec));
+  }
 
   /* ---------------- সাউন্ড টগল ---------------- */
   const soundBtn = $("#soundToggle");
