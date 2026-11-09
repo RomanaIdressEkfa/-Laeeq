@@ -229,6 +229,9 @@
     "বাবা দাড়ি চুলকাচ্ছেন",
     "মহাবিশ্বের সার্ভারে কানেক্ট হচ্ছে",
     "বাবা গুগল করছেন (চুপ!)",
+    "বাবা এক আঙুলে টাইপ করছেন ✍️",
+    "বাবা চশমা খুঁজছেন (চোখেই আছে) 👓",
+    "বাবা হিমালয়ের সাথে কল করছেন 📞",
   ];
 
   const POKES = [
@@ -493,11 +496,13 @@
   /* ---------------- চ্যাট ---------------- */
   const chat = $("#chat");
   function scrollChat() { chat.scrollTop = chat.scrollHeight; }
-  function addBaba(html) {
+  const BABA_META = ["এইমাত্র", "ধ্যান থেকে পাঠানো", "হিমালয় থেকে", "স্বপ্নে লেখা", "ঘুমের ঘোরে"];
+  function addBaba(html, { meta = true } = {}) {
     const m = document.createElement("div");
     m.className = "msg baba";
-    m.innerHTML = `<img class="av" src="${BABA_AVATAR}" alt=""><div class="txt">${html}</div>`;
+    m.innerHTML = `<img class="av" src="${BABA_AVATAR}" alt=""><div class="txt">${html}${meta ? `<span class="meta">${pick(BABA_META)}</span>` : ""}</div>`;
     chat.appendChild(m); scrollChat();
+    $$(".msg.user .ticks:not(.seen)", chat).forEach((t) => { t.classList.add("seen"); t.textContent = "✓✓ বাবা দেখেছেন"; });
     return m;
   }
   function addUser(text) {
@@ -505,11 +510,29 @@
     m.className = "msg user";
     const av = document.createElement("span"); av.className = "av"; av.textContent = "🙇";
     const t = document.createElement("div"); t.className = "txt"; t.textContent = text;
+    const meta = document.createElement("span"); meta.className = "meta";
+    meta.innerHTML = `এইমাত্র · <span class="ticks">✓ পাঠানো</span>`;
+    t.appendChild(meta);
     m.append(av, t);
     chat.appendChild(m); scrollChat();
   }
+  const STICKERS = ["আশীর্বাদ 🙏", "দক্ষিণা? 💰", "বাবা কুল 😎", "ঘুম পায় 😴", "হুম 🤔", "জয় সিঙ্গারা 🔺"];
+  function maybeSticker() {
+    if (Math.random() > 0.4) return;
+    setTimeout(() => {
+      const m = addBaba(`<div class="sticker-card"><img src="assets/img/face-baba.png" alt=""><b>${pick(STICKERS)}</b></div>`, { meta: false });
+      m.classList.add("sticker");
+      blip();
+    }, 900);
+  }
+  const statusEl = $("#babaStatus"), ctDot = $("#ctDot");
+  const IDLE_STATUS = ["🟢 অনলাইন — ভক্ত খুঁজছেন", "🟢 অনলাইন — দক্ষিণার অপেক্ষায়", "😴 ঘুম ঘুম পাচ্ছে", "🍛 কাচ্চি খাচ্ছেন, পরে রিপ্লাই", "🟢 অনলাইন — দাড়ি আঁচড়াচ্ছেন"];
+  function setStatus(busyNow) {
+    ctDot.classList.toggle("busy", busyNow);
+    statusEl.textContent = busyNow ? "🧘 ধ্যান করছেন… (আসলে টাইপ করছেন)" : pick(IDLE_STATUS);
+  }
   function addTyping() {
-    const m = addBaba(`${pick(THINKING)} <span class="dots"><span>.</span><span>.</span><span>.</span></span>`);
+    const m = addBaba(`${pick(THINKING)} <span class="dots"><span>.</span><span>.</span><span>.</span></span>`, { meta: false });
     m.classList.add("typing");
     return m;
   }
@@ -544,6 +567,7 @@
 
   function setBusy(v) {
     busy = v;
+    setStatus(v);
     pickerBtn.disabled = v;
     $("#customInput").disabled = v;
     $("#customForm button").disabled = v;
@@ -586,6 +610,7 @@
     say(ans);
     bumpCount();
     if (Math.random() < 0.35) petals(12);
+    maybeSticker();
     renderFollowups(p);
   }
 
@@ -638,6 +663,84 @@
   function esc(s) {
     return s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   }
+
+  /* ---------------- চ্যাট হেডারের বাটন ---------------- */
+  const JOKES = {
+    call: "বাবা ফোন ধরেন না বৎস। নেটওয়ার্ক শুধু হিমালয়ের চূড়ায় পাওয়া যায়।",
+    video: "ভিডিও কল নিষেধ! বাবার পাগড়ি এখনো ঠিক করা হয়নি।",
+    more: "আর কোনো অপশন নাই। বাবার কাছে সবকিছুই কম কম, শুধু দাড়ি বেশি।",
+  };
+  $$(".ct-actions button").forEach((b) => b.addEventListener("click", () => {
+    const j = JOKES[b.dataset.joke];
+    toast("🧔 " + j); speak(j); blip();
+  }));
+
+  /* ---------------- দানবাক্স ---------------- */
+  let fund = 12;
+  const DAN_LINES = [
+    "টুং! বাবার কাচ্চি ফান্ডে জমা হলো।",
+    "দানবাক্সটা আসলে বাবার টিফিন বক্স, কাউকে বলো না।",
+    "এই টাকায় বাবা আরেকটা কালো চশমা কিনবেন।",
+    "রসিদ চাইও না বৎস, বাবা ডিজিটাল না।",
+  ];
+  $("#danbox").addEventListener("click", function () {
+    const c = document.createElement("span");
+    c.className = "coin"; c.textContent = "🪙";
+    this.appendChild(c);
+    c.addEventListener("animationend", () => c.remove());
+    setTimeout(() => {
+      bell(1568, 0.5, 0.12); bell(2093, 0.4, 0.08);
+      this.classList.remove("shake"); void this.offsetWidth; this.classList.add("shake");
+      fund = Math.min(fund + 1 + Math.floor(Math.random() * 4), 99);
+      $("#dbFund").textContent = "কাচ্চি ফান্ড: " + bn(fund) + "%";
+      if (fund >= 99) { toast("🎉 কাচ্চি ফান্ড পূর্ণ! বাবা এখন বিরিয়ানি হাউসে রওনা দিয়েছেন 🍛"); petals(30); fund = 12; }
+      else if (Math.random() < 0.5) { const l = pick(DAN_LINES); say(l); }
+    }, 480);
+  });
+
+  /* ---------------- চুপ থাকলে বাবা আজগুবি মন্ত্র বিড়বিড় করেন ---------------- */
+  const MANTRAS = [
+    "ওং মং ফং… ক্রিং ক্রাং ফট্ স্বাহা!",
+    "হিং টিং ছট! ফুস মন্তর ফুস! সমস্যা পালা ধুস!",
+    "ওঁ কাচ্চায় নমঃ… সিঙ্গারায় স্বাহা…",
+    "আলু বেগুন পটল, সমস্যা হবে বটল!",
+    "ওং ফং ঢং… ওয়াই-ফাই ফুল সিগন্যাল ভবতু!",
+    "জয় সিঙ্গারা, জয় চা, ভক্ত এবার দক্ষিণা দা!",
+    "ক্রিং ক্রিং… হ্যালো ব্রহ্মাণ্ড? বাবা বলছি… নেটওয়ার্ক নাই…",
+    "উম্ম্ম্ম… ঢং ঢং… টাকা আসুক ঝনঝন!",
+    "ফুউউ ফাআআ… পেট ভরা থাকুক, মাথা খালি থাকুক!",
+  ];
+  let lastAct = Date.now(), darbarVisible = true;
+  ["click", "keydown", "touchstart"].forEach((ev) => document.addEventListener(ev, () => (lastAct = Date.now()), { passive: true }));
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver((es) => { darbarVisible = es[0].isIntersecting; }, { threshold: 0.4 }).observe($(".stage"));
+  }
+  function mantraNotes() {
+    const wrap = $(".baba-wrap");
+    for (let i = 0; i < 4; i++) {
+      setTimeout(() => {
+        const n = document.createElement("span");
+        n.className = "mantra-note";
+        n.textContent = pick(["🕉️", "♪", "♫", "✨", "ॐ"]);
+        n.style.left = 38 + Math.random() * 24 + "%";
+        n.style.top = "22%";
+        n.style.setProperty("--dx", (Math.random() * 160 - 80) + "px");
+        n.style.setProperty("--rz", (Math.random() * 60 - 30) + "deg");
+        wrap.appendChild(n);
+        n.addEventListener("animationend", () => n.remove());
+      }, i * 350);
+    }
+  }
+  setInterval(() => {
+    if (!introDone || busy || !darbarVisible || document.hidden) return;
+    if (Date.now() - lastAct < 11000) return;
+    lastAct = Date.now();
+    const m = pick(MANTRAS);
+    bubble.classList.add("mantra");
+    say(m).then(() => setTimeout(() => bubble.classList.remove("mantra"), 2500));
+    mantraNotes();
+    statusEl.textContent = "🕉️ মন্ত্র পড়ছেন (নিজেও জানেন না কী)";
+  }, 3000);
 
   /* ---------------- বাবাকে খোঁচা ---------------- */
   let pokeCount = 0;

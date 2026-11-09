@@ -58,6 +58,30 @@
   <div class="om om2" aria-hidden="true">☸</div>
   <div class="om om3" aria-hidden="true">🪔</div>
 
+  <div class="ticker" aria-label="বাবার ব্রেকিং নিউজ">
+    <b class="ticker-tag">📢 ব্রেকিং</b>
+    <div class="ticker-view"><div class="ticker-track">
+      <div class="ticker-items">
+        <span>🔴 ব্রেকিং: বাবা আজ টানা ১৪ ঘণ্টা ঘুমিয়ে নতুন বিশ্বরেকর্ড গড়েছেন</span>
+        <span>📈 বাজার: সিঙ্গারার দাম বাড়ায় দক্ষিণা রেট ১০% বৃদ্ধি</span>
+        <span>🌧️ আবহাওয়া: বাবার মেজাজে আজ বজ্রসহ বৃষ্টির সম্ভাবনা</span>
+        <span>🏏 খেলা: বাবা ধ্যানে বসেই ৬ বলে ৬টা ছক্কা মেরেছেন (স্বপ্নে)</span>
+        <span>📵 সতর্কবার্তা: বাবার কালো চশমা খোলা কঠোরভাবে নিষেধ</span>
+        <span>🛒 অফার: ২টা সমস্যার সাথে ১টা ভুল সমাধান একদম ফ্রি!</span>
+        <span>🚨 জরুরি: আশ্রমের ওয়াই-ফাই পাসওয়ার্ড “dakshina123” ফাঁস</span>
+      </div>
+      <div class="ticker-items" aria-hidden="true">
+        <span>🔴 ব্রেকিং: বাবা আজ টানা ১৪ ঘণ্টা ঘুমিয়ে নতুন বিশ্বরেকর্ড গড়েছেন</span>
+        <span>📈 বাজার: সিঙ্গারার দাম বাড়ায় দক্ষিণা রেট ১০% বৃদ্ধি</span>
+        <span>🌧️ আবহাওয়া: বাবার মেজাজে আজ বজ্রসহ বৃষ্টির সম্ভাবনা</span>
+        <span>🏏 খেলা: বাবা ধ্যানে বসেই ৬ বলে ৬টা ছক্কা মেরেছেন (স্বপ্নে)</span>
+        <span>📵 সতর্কবার্তা: বাবার কালো চশমা খোলা কঠোরভাবে নিষেধ</span>
+        <span>🛒 অফার: ২টা সমস্যার সাথে ১টা ভুল সমাধান একদম ফ্রি!</span>
+        <span>🚨 জরুরি: আশ্রমের ওয়াই-ফাই পাসওয়ার্ড “dakshina123” ফাঁস</span>
+      </div>
+    </div></div>
+  </div>
+
   <div class="stage">
     <div id="bubble" class="bubble hidden"><span id="bubbleText"></span></div>
     <div class="baba-wrap">
@@ -103,15 +127,35 @@
         </div>
       </div>
       <div id="smoke" class="smoke" aria-hidden="true"></div>
+      <div class="incense left" aria-hidden="true"><i></i><i></i><i></i><span class="stick"></span><span class="holder"></span></div>
+      <button class="danbox" id="danbox" title="দানবাক্স">
+        <span class="slot"></span>
+        <span class="db-label">দানবাক্স</span>
+        <span class="db-fund" id="dbFund">কাচ্চি ফান্ড: ১২%</span>
+      </button>
       <div class="mat" aria-hidden="true"></div>
     </div>
-    <p class="baba-hint">👆 বাবাকে খোঁচা দিয়ে দেখো</p>
+    <div class="nameplate">
+      <b>ভন্ড লেংটা বাবা Laeeq</b>
+      <span>ফি: ২টা সিঙ্গারা · সময়: যখন ঘুম ভাঙে</span>
+    </div>
+    <p class="baba-hint">👆 বাবাকে খোঁচা দাও · 😎 চশমায় ক্লিক করো · 🪙 দানবাক্সে টাকা ফেলো</p>
   </div>
 
   <div id="consult" class="consult hidden">
-    <div class="consult-head">
-      <span class="live-dot"></span> লাইভ দরবার — <b id="bhaktCount">১,২৩৪</b> জন ভক্ত আজ ঠকেছেন
+    <div class="chat-top">
+      <div class="ct-av"><img src="assets/img/baba-head.jpg" alt=""><span class="ct-dot" id="ctDot"></span></div>
+      <div class="ct-info">
+        <b>ভন্ড লেংটা বাবা <span class="ct-badge">✔ ভেরিফায়েড ভন্ড</span></b>
+        <small id="babaStatus">🟢 অনলাইন — ভক্ত খুঁজছেন</small>
+      </div>
+      <div class="ct-actions">
+        <button type="button" data-joke="call" title="কল">📞</button>
+        <button type="button" data-joke="video" title="ভিডিও কল">📹</button>
+        <button type="button" data-joke="more" title="আরো">⋮</button>
+      </div>
     </div>
+    <div class="ct-strip"><span class="live-dot"></span> লাইভ দরবার — <b id="bhaktCount">১,২৩৪</b> জন ভক্ত আজ ঠকেছেন</div>
 
     <div id="chat" class="chat" aria-live="polite"></div>
 
